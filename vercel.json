@@ -1,7 +1,6 @@
 {
   "crons": [
-    { "path": "/api/cron?type=outbreaks", "schedule": "0 */12 * * *" },
-    { "path": "/api/cron?type=news", "schedule": "0 */12 * * *" },
+    { "path": "/api/cron?type=news", "schedule": "0 8 * * *" },
     { "path": "/api/cron?type=freedom", "schedule": "0 6 * * *" },
     { "path": "/api/cron?type=legislation", "schedule": "0 18 * * *" }
   ]
