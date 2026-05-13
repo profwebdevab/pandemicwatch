@@ -121,7 +121,7 @@ export default function DashboardPage() {
       {/* World Map */}
       <div>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-mono text-gray-300 font-bold">MAPA DE ALERTA GLOBAL</h2>
+          <h2 className="text-sm font-mono text-gray-300 font-bold">MAPA DE ALERTA MUNDIAL</h2>
           {selectedCountry && (
             <span className="text-xs font-mono text-[#00ff87]">
               País selecionado: {selectedCountry}

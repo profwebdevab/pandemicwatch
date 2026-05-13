@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import type { FreedomScore } from '@/types'
 import FreedomScoreCard from '@/components/FreedomScore'
-import { Shield, Wifi, DollarSign, Filter } from 'lucide-react'
+import { Wifi, DollarSign, Filter } from 'lucide-react'
 
 export default function FreedomIndexPage() {
   const [scores, setScores] = useState<FreedomScore[]>([])
@@ -44,7 +44,7 @@ export default function FreedomIndexPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-mono font-bold text-[#00ff87]">ÍNDICE DE LIBERDADE GLOBAL</h1>
+        <h1 className="text-xl font-mono font-bold text-[#00ff87]">ÍNDICE DE LIBERDADE MUNDIAL</h1>
         <p className="text-xs text-gray-500 font-mono mt-1">
           Ranking baseado em histórico COVID-19, liberdades civis e políticas atuais
         </p>

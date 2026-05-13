@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains' })
 
 export const metadata: Metadata = {
-  title: 'PandemicWatch — Vigilância Epidemiológica Global',
+  title: 'PandemicWatch — Vigilância Epidemiológica Mundial',
   description: 'Monitoramento de surtos, liberdades civis e guia de relocação em tempo real.',
   appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'PandemicWatch' },
   icons: { icon: '/icons/icon-192.png', apple: '/icons/icon-192.png' },

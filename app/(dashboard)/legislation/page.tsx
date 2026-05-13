@@ -54,7 +54,7 @@ export default function LegislationPage() {
       </div>
 
       {/* AI Analysis */}
-      <AIInsights type="outbreak-summary" title="Análise Legislativa Global por LLM" />
+      <AIInsights type="outbreak-summary" title="Análise Legislativa Mundial por LLM" />
 
       {/* Filters */}
       <div className="bg-[#0d1117] border border-[#00ff87]/10 rounded-lg p-4 space-y-3">
