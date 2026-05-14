@@ -74,7 +74,20 @@ export default function NewsCard({ article, compact = false }: Props) {
         )}
         <div className="ml-auto flex items-center gap-2">
           {article.source && (
-            <span className="text-xs text-gray-600 font-mono">{article.source}</span>
+            <a
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-xs text-gray-600 font-mono hover:text-[#00ff87] transition-colors"
+            >
+              {article.source}
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          )}
+          {compact && article.ai_summary && (
+            <span className="text-xs text-[#00ff87]/50 font-mono flex items-center gap-0.5">
+              <Brain className="w-3 h-3" />LLM
+            </span>
           )}
           {article.published_at && (
             <span className="text-xs text-gray-600 font-mono">

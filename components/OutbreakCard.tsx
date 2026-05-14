@@ -71,16 +71,6 @@ export default function OutbreakCard({ outbreak }: Props) {
           <span className={`text-xs font-mono font-bold ${potential.color}`}>{potential.label}</span>
         </div>
         <div className="flex items-center gap-2">
-          {outbreak.source_url && (
-            <a
-              href={outbreak.source_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-600 hover:text-[#00ff87] transition-colors"
-            >
-              <ExternalLink className="w-3 h-3" />
-            </a>
-          )}
           <span className="text-xs text-gray-600 font-mono">
             {outbreak.last_updated_at
               ? formatDistanceToNow(new Date(outbreak.last_updated_at), { addSuffix: true, locale: ptBR })
@@ -89,9 +79,21 @@ export default function OutbreakCard({ outbreak }: Props) {
         </div>
       </div>
 
-      {outbreak.source_name && (
+      {(outbreak.source_name || outbreak.source_url) && (
         <div className="mt-2 pt-2 border-t border-[#1f2937]">
-          <span className="text-xs text-gray-600 font-mono">FONTE: {outbreak.source_name}</span>
+          {outbreak.source_url ? (
+            <a
+              href={outbreak.source_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-xs text-gray-600 font-mono hover:text-[#00ff87] transition-colors"
+            >
+              FONTE: {outbreak.source_name || new URL(outbreak.source_url).hostname}
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          ) : (
+            <span className="text-xs text-gray-600 font-mono">FONTE: {outbreak.source_name}</span>
+          )}
         </div>
       )}
     </div>

@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import { RefreshCw, Loader2, CheckCircle2, XCircle, Terminal,
          Newspaper, Shield, Scale, Brain, LogOut, Database,
-         Cpu, Rss, Clock } from 'lucide-react'
+         Cpu, Rss, Clock, ExternalLink } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 interface JobResult {
@@ -36,24 +36,34 @@ function fmt(data: JobResult): string {
 }
 
 interface DbStats { outbreaks: number; freedom: number; news: number; legislation: number }
+interface RecentArticle { id: string; title: string; url: string; source?: string; ai_summary?: string; published_at?: string }
 
 export default function AdminPage() {
-  const [results, setResults] = useState<Record<string, { status: 'idle'|'loading'|'ok'|'error'; data?: JobResult }>>({})
-  const [log,     setLog]     = useState<string[]>([])
-  const [stats,   setStats]   = useState<DbStats | null>(null)
-  const [lastRun, setLastRun] = useState<Record<string, string>>({})
+  const [results,        setResults]        = useState<Record<string, { status: 'idle'|'loading'|'ok'|'error'; data?: JobResult }>>({})
+  const [log,            setLog]            = useState<string[]>([])
+  const [stats,          setStats]          = useState<DbStats | null>(null)
+  const [lastRun,        setLastRun]        = useState<Record<string, string>>({})
+  const [recentArticles, setRecentArticles] = useState<RecentArticle[]>([])
   const router = useRouter()
 
   useEffect(() => {
     fetchStats()
+    fetchRecentArticles()
     const saved = localStorage.getItem('pw_admin_lastrun')
     if (saved) setLastRun(JSON.parse(saved) as Record<string, string>)
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function fetchStats() {
     try {
       const r = await fetch('/api/admin-stats')
       if (r.ok) setStats(await r.json() as DbStats)
+    } catch { /* ignore */ }
+  }
+
+  async function fetchRecentArticles() {
+    try {
+      const r = await fetch('/api/recent-news')
+      if (r.ok) setRecentArticles(await r.json() as RecentArticle[])
     } catch { /* ignore */ }
   }
 
@@ -77,6 +87,7 @@ export default function AdminPage() {
       })
       addLog(`✓ ${id}: ${fmt(data)}`)
       fetchStats()
+      if (id === 'news' || id === 'summarize') fetchRecentArticles()
     } catch (e) {
       setResults((prev) => ({ ...prev, [id]: { status: 'error', data: { error: String(e) } } }))
       addLog(`✗ ${id}: ${String(e)}`)
@@ -212,6 +223,42 @@ export default function AdminPage() {
             </div>
           )}
       </div>
+
+      {/* Recent Articles */}
+      {recentArticles.length > 0 && (
+        <div className="bg-[#0d1117] border border-[#00ff87]/10 rounded-lg p-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Newspaper className="w-4 h-4 text-blue-400" />
+            <span className="text-xs font-mono text-blue-400 font-bold">ARTIGOS RECENTES</span>
+            <span className="text-xs text-gray-600 font-mono ml-auto">{recentArticles.length} artigos</span>
+          </div>
+          <div className="space-y-2 max-h-80 overflow-y-auto">
+            {recentArticles.map((a) => (
+              <div key={a.id} className="flex items-start gap-2 py-1.5 border-b border-[#1f2937] last:border-0">
+                <div className="flex-1 min-w-0">
+                  <a
+                    href={a.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-mono text-gray-300 hover:text-[#00ff87] transition-colors flex items-start gap-1 leading-tight"
+                  >
+                    <span className="line-clamp-1">{a.title}</span>
+                    <ExternalLink className="w-3 h-3 shrink-0 mt-0.5" />
+                  </a>
+                  {a.source && (
+                    <span className="text-[10px] text-gray-600 font-mono">{a.source}</span>
+                  )}
+                </div>
+                {a.ai_summary && (
+                  <span className="shrink-0 flex items-center gap-0.5 text-[10px] text-[#00ff87]/60 font-mono border border-[#00ff87]/20 rounded px-1 py-0.5">
+                    <Brain className="w-2.5 h-2.5" />LLM
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
     </div>
   )

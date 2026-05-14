@@ -4,14 +4,22 @@ import { upsertNewsArticle, upsertFreedomScore, getNews } from '@/lib/supabase'
 import { BASE_FREEDOM_DATA } from '@/lib/freedom-scorer'
 import Anthropic from '@anthropic-ai/sdk'
 
-// Em dev (sem CRON_SECRET definido), libera acesso; em prod exige o secret
 function authCheck(request: NextRequest): boolean {
   const envSecret = process.env.CRON_SECRET
   if (!envSecret) return true // dev local sem secret configurado
+
+  // Accept cron secret via header or query param (Vercel cron calls)
   const provided =
     request.headers.get('x-cron-secret') ||
     new URL(request.url).searchParams.get('secret')
-  return provided === envSecret
+  if (provided === envSecret) return true
+
+  // Also accept requests from authenticated admin users
+  const adminToken  = request.cookies.get('pw_admin')?.value
+  const adminSecret = process.env.ADMIN_TOKEN
+  if (adminSecret && adminToken === adminSecret) return true
+
+  return false
 }
 
 async function summarizeArticles(articles: Awaited<ReturnType<typeof getNews>>) {

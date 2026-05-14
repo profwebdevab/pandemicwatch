@@ -88,8 +88,9 @@ export default function LegislationTracker({ item }: Props) {
             href={item.source_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gray-600 hover:text-[#00ff87] transition-colors"
+            className="inline-flex items-center gap-1 text-xs text-gray-600 font-mono hover:text-[#00ff87] transition-colors"
           >
+            FONTE: {new URL(item.source_url).hostname.replace(/^www\./, '')}
             <ExternalLink className="w-3 h-3" />
           </a>
         )}
