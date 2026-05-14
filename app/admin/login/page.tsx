@@ -1,5 +1,6 @@
 'use client'
-import { useState, FormEvent } from 'react'
+export const dynamic = 'force-dynamic'
+import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Activity, Lock, Loader2, AlertCircle } from 'lucide-react'
 
@@ -11,7 +12,7 @@ export default function AdminLogin() {
   const searchParams = useSearchParams()
   const from         = searchParams.get('from') || '/admin'
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: { preventDefault(): void }) {
     e.preventDefault()
     setLoading(true)
     setError('')
