@@ -5,19 +5,21 @@ import { BASE_FREEDOM_DATA } from '@/lib/freedom-scorer'
 import Anthropic from '@anthropic-ai/sdk'
 
 function authCheck(request: NextRequest): boolean {
-  const envSecret = process.env.CRON_SECRET
-  if (!envSecret) return true // dev local sem secret configurado
-
-  // Accept cron secret via header or query param (Vercel cron calls)
-  const provided =
-    request.headers.get('x-cron-secret') ||
-    new URL(request.url).searchParams.get('secret')
-  if (provided === envSecret) return true
-
-  // Also accept requests from authenticated admin users
-  const adminToken  = request.cookies.get('pw_admin')?.value
+  const cronSecret  = process.env.CRON_SECRET   // auto-set by Vercel (system var, invisible in env ls)
   const adminSecret = process.env.ADMIN_TOKEN
+
+  // Vercel scheduled cron sends: Authorization: Bearer {CRON_SECRET}
+  if (cronSecret) {
+    const auth = request.headers.get('authorization')
+    if (auth === `Bearer ${cronSecret}`) return true
+  }
+
+  // Logged-in admin triggering manually from the browser
+  const adminToken = request.cookies.get('pw_admin')?.value
   if (adminSecret && adminToken === adminSecret) return true
+
+  // Dev / local: neither secret is set
+  if (!cronSecret && !adminSecret) return true
 
   return false
 }
